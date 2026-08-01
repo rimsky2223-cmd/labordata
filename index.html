@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人力資源知識庫</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #f8fafc; color: #1e293b; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Noto Sans TC", sans-serif; line-height: 1.6; }
+    
+    .header { position: sticky; top: 0; z-index: 30; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; padding: 12px 16px; }
+    .header-container { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.25rem; color: #1e3a8a; }
+    
+    .layout { max-width: 900px; margin: 0 auto; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px; }
+    
+    /* 搜尋與篩選區 */
+    .search-box { position: relative; }
+    .search-input { width: 100%; padding: 14px 20px; background: #ffffff; border: 2px solid #cbd5e1; border-radius: 999px; font-size: 1rem; outline: none; transition: border-color 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .search-input:focus { border-color: #1e3a8a; }
+    
+    .category-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+    .tab-btn { background: #e2e8f0; color: #475569; border: none; padding: 8px 16px; border-radius: 999px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .tab-btn.active { background: #1e3a8a; color: #ffffff; }
+    
+    /* 條目列表 */
+    .card-list { display: flex; flex-direction: column; gap: 16px; }
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .card-master { background: #eff6ff; color: #1e3a8a; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
+    .card-title { font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+    
+    .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag-chip { background: #f1f5f9; color: #64748b; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    
+    .card-content { font-size: 0.95rem; color: #334155; white-space: pre-wrap; word-break: break-word; }
+    
+    /* 媒體元件 */
+    .media-box { margin-top: 12px; border-radius: 8px; overflow: hidden; }
+    .media-box img { max-width: 100%; height: auto; border-radius: 8px; margin-top: 8px; }
+    .video-link { display: inline-flex; align-items: center; gap: 6px; color: #dc2626; font-size: 0.875rem; font-weight: 600; text-decoration: none; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-container">
+      <div class="brand">
+        <span>💼</span>
+        <span>人力資源知識庫</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- 搜尋欄 -->
+    <div class="search-box">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋 HR 條目、關鍵字、標籤..." oninput="renderData()">
+    </div>
+
+    <!-- 分類 Tab -->
+    <div class="category-tabs" id="categoryTabs"></div>
+
+    <!-- 內容卡片區塊 -->
+    <div class="card-list" id="cardList"></div>
+  </div>
+
+  <script>
+    let articles = [];
+    let currentCategory = "全部";
+
+    async function loadData() {
+      // 1. 優先從站內的 data.json 讀取 (GitHub / Vercel 自動更新)
+      try {
+        const res = await fetch('data.json?t=' + Date.now());
+        if (res.ok) {
+          articles = await res.json();
+          initApp();
+          return;
+        }
+      } catch (e) {
+        console.log("未檢測到 data.json，轉為讀取本地暫存...");
+      }
+
+      // 2. 備用：讀取本地 LocalStorage
+      const localData = localStorage.getItem('hr_articles');
+      if (localData) {
+        try { articles = JSON.parse(localData); } catch(e) { articles = []; }
+      }
+
+      initApp();
+    }
+
+    function initApp() {
+      renderTabs();
+      renderData();
+    }
+
+    function renderTabs() {
+      const categories = ["全部", ...new Set(articles.map(a => a.master).filter(Boolean))];
+      const tabsContainer = document.getElementById('categoryTabs');
+      tabsContainer.innerHTML = categories.map(cat => `
+        <button class="tab-btn ${cat === currentCategory ? 'active' : ''}" onclick="setCategory('${cat}')">
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      renderTabs();
+      renderData();
+    }
+
+    function renderData() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      
+      const filtered = articles.filter(a => {
+        const matchCat = (currentCategory === "全部" || a.master === currentCategory);
+        const matchQuery = !query || 
+          a.title.toLowerCase().includes(query) || 
+          a.content.toLowerCase().includes(query) ||
+          (a.tags && a.tags.some(t => t.toLowerCase().includes(query)));
+        return matchCat && matchQuery;
+      });
+
+      const cardList = document.getElementById('cardList');
+      if (filtered.length === 0) {
+        cardList.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 40px;">查無相關 HR 條目或資料暫時空白</div>';
+        return;
+      }
+
+      cardList.innerHTML = filtered.map(a => `
+        <div class="card">
+          <div class="card-header">
+            <span class="card-master">${a.master || '未分類'}</span>
+          </div>
+          <div class="card-title">${a.title}</div>
+          
+          ${a.tags && a.tags.length ? `
+            <div class="tags-container">
+              ${a.tags.map(t => `<span class="tag-chip">#${t}</span>`).join('')}
+            </div>
+          ` : ''}
+
+          <div class="card-content">${escapeHtml(a.content || '')}</div>
+
+          ${a.youtube ? `
+            <div style="margin-top: 10px;">
+              <a href="${a.youtube}" target="_blank" class="video-link">📺 觀看相關補充影片</a>
+            </div>
+          ` : ''}
+
+          ${a.images && a.images.length ? `
+            <div class="media-box">
+              ${a.images.map(img => `<img src="${img}" alt="圖片" loading="lazy">`).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
