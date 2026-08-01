@@ -61,14 +61,13 @@
     .cat-item.active { background: #2d4a3e; color: #ffffff; font-weight: 700; }
     .cat-count { font-size: 12px; opacity: 0.8; }
 
-    /* 右側清單列表 (列表式卡片佈局) */
+    /* 右側清單列表 */
     main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-right: 4px; }
     .article-card { background: #ffffff; border: 1px solid #ece9e3; border-radius: 14px; padding: 24px; transition: border-color 0.2s; }
     .article-card:hover { border-color: #cbd5e1; }
     
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .master-badge { font-size: 14px; font-weight: 700; color: #171717; display: flex; align-items: center; gap: 8px; }
-    .card-count { font-size: 11px; background: #f4f1ed; color: #8f8a85; padding: 2px 10px; border-radius: 99px; }
 
     .card-title { font-size: 18px; font-weight: 750; color: #171717; margin-bottom: 8px; line-height: 1.35; }
     .card-excerpt { font-size: 14px; color: #6b6560; line-height: 1.6; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -79,6 +78,7 @@
       padding: 3px 12px; border-radius: 99px; cursor: pointer; user-select: none; transition: all 0.2s; 
     }
     .sub-tag:hover { background: #eef2ff; border-color: #2a4bd7; }
+    .sub-tag.selected { background: #2a4bd7; color: #ffffff; border-color: #2a4bd7; }
 
     mark.search-highlight { background-color: #fef08a; color: #854d0e; padding: 1px 4px; border-radius: 4px; font-weight: 600; }
 
@@ -98,7 +98,7 @@
       </div>
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋關鍵字高亮..." oninput="filterArticles()">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 搜尋內文關鍵字..." oninput="filterArticles()">
       <div class="stats-badge" id="totalCount">0 NOTES</div>
     </div>
   </header>
@@ -119,6 +119,7 @@
   <script>
     let allData = [];
     let currentCategory = 'ALL';
+    let selectedTag = null;
     let currentSearchQuery = '';
 
     async function loadData() {
@@ -137,6 +138,7 @@
 
     function selectCategory(cat) {
       currentCategory = cat;
+      selectedTag = null; // 切換大分類時清除 Tag 篩選
       renderCategories();
       renderArticles();
     }
@@ -152,13 +154,13 @@
         counts[m] = (counts[m] || 0) + 1;
       });
 
-      let html = `<div class="cat-item ${currentCategory === 'ALL' ? 'active' : ''}" onclick="selectCategory('ALL')">
+      let html = `<div class="cat-item ${currentCategory === 'ALL' && !selectedTag ? 'active' : ''}" onclick="selectCategory('ALL')">
         <span>全部</span>
         <span class="cat-count">${filtered.length}</span>
       </div>`;
 
       for (const [master, count] of Object.entries(counts)) {
-        const activeClass = currentCategory === master ? 'active' : '';
+        const activeClass = (currentCategory === master && !selectedTag) ? 'active' : '';
         html += `<div class="cat-item ${activeClass}" onclick="selectCategory('${master.replace(/'/g, "\\'")}')">
           <span>${master}</span>
           <span class="cat-count">${count}</span>
@@ -184,9 +186,15 @@
       renderArticles();
     }
 
+    // 點擊 Tag 進行精準篩選，不影響搜尋框黃色高亮
     function filterByTag(tag) {
-      document.getElementById('searchInput').value = tag;
-      filterArticles();
+      if (selectedTag === tag) {
+        selectedTag = null; // 再次點擊取消篩選
+      } else {
+        selectedTag = tag;
+      }
+      renderCategories();
+      renderArticles();
     }
 
     function highlightText(text, query) {
@@ -208,6 +216,10 @@
         data = data.filter(item => (item.master || '一般條目') === currentCategory);
       }
 
+      if (selectedTag) {
+        data = data.filter(item => Array.isArray(item.tags) && item.tags.includes(selectedTag));
+      }
+
       if (data.length === 0) {
         contentArea.innerHTML = `<div style="text-align: center; color: #9a9590; padding: 80px 0; font-size: 14px;">查無相符筆記</div>`;
         return;
@@ -220,7 +232,10 @@
         const excerptHtml = highlightText(plainExcerpt, currentSearchQuery);
 
         const tags = Array.isArray(item.tags) ? item.tags : [];
-        const tagsHtml = tags.map(t => `<span class="sub-tag" onclick="filterByTag('${t.replace(/'/g, "\\'")}')"># ${highlightText(t, currentSearchQuery)}</span>`).join('');
+        const tagsHtml = tags.map(t => {
+          const isSelected = selectedTag === t ? 'selected' : '';
+          return `<span class="sub-tag ${isSelected}" onclick="filterByTag('${t.replace(/'/g, "\\'")}')"># ${t}</span>`;
+        }).join('');
 
         html += `<div class="article-card">
           <div class="card-header">
