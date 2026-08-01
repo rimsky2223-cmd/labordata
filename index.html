@@ -48,70 +48,43 @@
 
     .app-container { display: flex; flex: 1; max-width: 1180px; width: 100%; margin: 0 auto; overflow: hidden; padding: 24px; gap: 28px; }
     
-    /* 側邊欄與大字號章節目錄 */
-    aside { width: 320px; flex-shrink: 0; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #ece9e3; border-radius: 14px; overflow: hidden; height: 100%; }
-    .aside-header { padding: 16px 20px; border-bottom: 1px solid #ece9e3; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 750; color: #171717; }
-    .nav-scroll { flex: 1; overflow-y: auto; padding: 16px 12px; display: flex; flex-direction: column; gap: 12px; }
+    /* 左側分類選單 */
+    aside { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; background: #ffffff; border: 1px solid #ece9e3; border-radius: 14px; overflow: hidden; height: 100%; }
+    .aside-header { padding: 16px 20px; border-bottom: 1px solid #ece9e3; font-size: 13px; font-weight: 700; color: #8f8a85; }
+    .nav-scroll { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
     
-    /* 折疊選單 (Accordion) */
-    .group-box { border: 1px solid #f1ece6; border-radius: 10px; overflow: hidden; background: #faf9f7; }
-    .group-title { 
-      font-size: 14px; font-weight: 700; color: #171717; padding: 12px 14px; cursor: pointer; 
-      display: flex; justify-content: space-between; align-items: center; user-select: none;
-      transition: background 0.2s;
+    .cat-item { 
+      padding: 10px 14px; border-radius: 10px; font-size: 14px; font-weight: 500; color: #2e2c29; 
+      cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; user-select: none;
     }
-    .group-title:hover { background: #f1ece6; }
-    .group-arrow { font-size: 11px; color: #8f8a85; transition: transform 0.2s; }
-    .group-box.open .group-arrow { transform: rotate(90deg); }
-    .group-content { display: none; padding: 4px 8px 8px 8px; background: #ffffff; border-top: 1px solid #f1ece6; }
-    .group-box.open .group-content { display: block; }
+    .cat-item:hover { background: #f6f5f3; }
+    .cat-item.active { background: #2d4a3e; color: #ffffff; font-weight: 700; }
+    .cat-count { font-size: 12px; opacity: 0.8; }
 
-    .nav-item { 
-      padding: 9px 12px; border-radius: 8px; font-size: 13.5px; line-height: 1.4; color: #2e2c29; 
-      cursor: pointer; transition: background 0.15s; display: flex; align-items: flex-start; gap: 8px; margin-top: 2px;
-    }
-    .nav-item:hover { background: #f6f5f3; }
-    .nav-item.active { background: #eef2ff; color: #2a4bd7; font-weight: 600; }
-    .dot { width: 5px; height: 5px; border-radius: 99px; background: #e8e2da; margin-top: 7px; flex-shrink: 0; }
-    .nav-item.active .dot { background: #3b5bff; }
-
-    /* 主內容區 */
-    main { flex: 1; overflow-y: auto; background: #ffffff; border: 1px solid #ece9e3; border-radius: 14px; display: flex; flex-direction: column; }
-    .article-container { padding: 32px; flex: 1; }
-    .article-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .master-tag { background: #171717; color: white; font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 99px; }
-    .updated-date { font-size: 11px; color: #a09a94; }
-    .article-title { font-size: 28px; font-weight: 750; line-height: 1.2; letter-spacing: -0.02em; color: #171717; margin-bottom: 16px; }
+    /* 右側清單列表 (列表式卡片佈局) */
+    main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-right: 4px; }
+    .article-card { background: #ffffff; border: 1px solid #ece9e3; border-radius: 14px; padding: 24px; transition: border-color 0.2s; }
+    .article-card:hover { border-color: #cbd5e1; }
     
-    /* 點擊 Tag 自動篩選連結 */
-    .tag-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .master-badge { font-size: 14px; font-weight: 700; color: #171717; display: flex; align-items: center; gap: 8px; }
+    .card-count { font-size: 11px; background: #f4f1ed; color: #8f8a85; padding: 2px 10px; border-radius: 99px; }
+
+    .card-title { font-size: 18px; font-weight: 750; color: #171717; margin-bottom: 8px; line-height: 1.35; }
+    .card-excerpt { font-size: 14px; color: #6b6560; line-height: 1.6; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .tag-group { display: flex; gap: 8px; flex-wrap: wrap; }
     .sub-tag { 
       background: #f4f1ed; color: #2a4bd7; border: 1px solid #ece9e3; font-size: 11px; font-weight: 600; 
       padding: 3px 12px; border-radius: 99px; cursor: pointer; user-select: none; transition: all 0.2s; 
     }
-    .sub-tag:hover { background: #eef2ff; border-color: #2a4bd7; transform: translateY(-1px); }
-
-    .divider { height: 1px; background: #ece9e3; margin-bottom: 28px; }
-
-    /* Markdown & 關鍵字高亮 (Highlight) */
-    .markdown-body { font-size: 15.5px; line-height: 1.85; color: #2a2a2a; white-space: pre-wrap; }
-    .markdown-body h1 { font-size: 20px; font-weight: 650; margin-top: 16px; margin-bottom: 8px; color: #171717; }
-    .markdown-body h2 { font-size: 20px; font-weight: 650; margin-top: 32px; padding-top: 16px; border-top: 1px solid #ece9e3; color: #171717; }
-    .markdown-body blockquote { border-left: 2.5px solid #171717; padding: 4px 0 4px 16px; color: #444; background: #faf9f7; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 15px; }
+    .sub-tag:hover { background: #eef2ff; border-color: #2a4bd7; }
 
     mark.search-highlight { background-color: #fef08a; color: #854d0e; padding: 1px 4px; border-radius: 4px; font-weight: 600; }
 
-    .media-area { margin-top: 40px; }
-    .media-label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: #a09a94; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .media-label::before { content: ""; width: 24px; height: 1px; background: #ece9e3; }
-    .video-wrap { position: relative; aspect-ratio: 16/9; border-radius: 14px; border: 1px solid #ece9e3; overflow: hidden; background: #111; }
-    .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-    .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
-    .img-grid img { width: 100%; border-radius: 12px; border: 1px solid #ece9e3; object-fit: cover; }
-
     @media (max-width: 768px) {
       .app-container { flex-direction: column; padding: 16px; }
-      aside { width: 100%; height: 35vh; }
+      aside { width: 100%; height: 25vh; }
     }
   </style>
 </head>
@@ -132,27 +105,21 @@
 
   <div class="app-container">
     <aside>
-      <div class="aside-header">
-        <span>章節目錄</span>
-        <span id="asideCount" style="color: #a09a94; font-size: 12px; font-weight: normal;">0 篇</span>
-      </div>
-      <div class="nav-scroll" id="navList">
+      <div class="aside-header">分類 / 標籤目錄</div>
+      <div class="nav-scroll" id="categoryList">
         <div style="text-align: center; color: #9a9590; padding: 20px; font-size: 13px;">載入中...</div>
       </div>
     </aside>
 
-    <main>
-      <div class="article-container" id="contentArea">
-        <div style="text-align: center; color: #9a9590; padding: 80px 0; font-size: 14px;">👈 請從左側選單點擊欲瀏覽的勞動筆記</div>
-      </div>
+    <main id="contentArea">
+      <div style="text-align: center; color: #9a9590; padding: 80px 0; font-size: 14px;">資料載入中...</div>
     </main>
   </div>
 
   <script>
     let allData = [];
-    let currentArticleId = null;
-    let openGroups = new Set();
-    let currentSearchQuery = "";
+    let currentCategory = 'ALL';
+    let currentSearchQuery = '';
 
     async function loadData() {
       try {
@@ -161,29 +128,47 @@
         allData = await res.json();
         
         document.getElementById('totalCount').innerText = `${allData.length} NOTES`;
-        document.getElementById('asideCount').innerText = `${allData.length} 篇`;
-        
-        if (allData.length > 0) {
-          openGroups.add(allData[0].master || '一般條目');
-          selectArticle(allData[0].id || 0);
-        } else {
-          renderNav(allData);
-        }
+        renderCategories();
+        renderArticles();
       } catch (err) {
-        document.getElementById('navList').innerHTML = `<div style="color: #ef4444; padding: 16px; font-size: 12px;">⚠️ 無法載入 data.json</div>`;
+        document.getElementById('contentArea').innerHTML = `<div style="color: #ef4444; padding: 16px; font-size: 13px;">⚠️ 無法載入 data.json</div>`;
       }
     }
 
-    function toggleGroup(master) {
-      if (openGroups.has(master)) {
-        openGroups.delete(master);
-      } else {
-        openGroups.add(master);
-      }
-      renderNav(getFilteredData());
+    function selectCategory(cat) {
+      currentCategory = cat;
+      renderCategories();
+      renderArticles();
     }
 
-    function getFilteredData() {
+    function renderCategories() {
+      const catList = document.getElementById('categoryList');
+      const counts = {};
+      
+      let filtered = getSearchData();
+
+      filtered.forEach(item => {
+        const m = item.master || '一般條目';
+        counts[m] = (counts[m] || 0) + 1;
+      });
+
+      let html = `<div class="cat-item ${currentCategory === 'ALL' ? 'active' : ''}" onclick="selectCategory('ALL')">
+        <span>全部</span>
+        <span class="cat-count">${filtered.length}</span>
+      </div>`;
+
+      for (const [master, count] of Object.entries(counts)) {
+        const activeClass = currentCategory === master ? 'active' : '';
+        html += `<div class="cat-item ${activeClass}" onclick="selectCategory('${master.replace(/'/g, "\\'")}')">
+          <span>${master}</span>
+          <span class="cat-count">${count}</span>
+        </div>`;
+      }
+
+      catList.innerHTML = html;
+    }
+
+    function getSearchData() {
       if (!currentSearchQuery) return allData;
       return allData.filter(item => {
         const title = (item.title || '').toLowerCase();
@@ -193,56 +178,14 @@
       });
     }
 
-    function renderNav(data) {
-      const navList = document.getElementById('navList');
-      if (!data || data.length === 0) {
-        navList.innerHTML = `<div style="text-align: center; color: #9a9590; padding: 20px; font-size: 13px;">沒有符合的筆記</div>`;
-        return;
-      }
-      const grouped = {};
-      data.forEach(item => {
-        const m = item.master || '一般條目';
-        if (!grouped[m]) grouped[m] = [];
-        grouped[m].push(item);
-      });
-
-      let html = '';
-      for (const [master, items] of Object.entries(grouped)) {
-        const isOpen = currentSearchQuery ? true : openGroups.has(master);
-        const openClass = isOpen ? 'open' : '';
-        
-        html += `<div class="group-box ${openClass}">
-          <div class="group-title" onclick="toggleGroup('${master.replace(/'/g, "\\'")}')">
-            <span>${master} (${items.length})</span>
-            <span class="group-arrow">▶</span>
-          </div>
-          <div class="group-content">`;
-          
-        items.forEach(item => {
-          const itemId = item.id !== undefined ? item.id : item.title;
-          const activeClass = String(itemId) === String(currentArticleId) ? 'active' : '';
-          const highlightedTitle = highlightText(item.title || '無標題', currentSearchQuery);
-          html += `<div class="nav-item ${activeClass}" onclick="selectArticle('${String(itemId).replace(/'/g, "\\'")}')"><div class="dot"></div><span>${highlightedTitle}</span></div>`;
-        });
-        
-        html += `</div></div>`;
-      }
-      navList.innerHTML = html;
-    }
-
     function filterArticles() {
       currentSearchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-      const filtered = getFilteredData();
-      renderNav(filtered);
-      if (currentArticleId !== null) {
-        selectArticle(currentArticleId, false);
-      }
+      renderCategories();
+      renderArticles();
     }
 
-    // 點擊標籤直接篩選
     function filterByTag(tag) {
-      const searchInput = document.getElementById('searchInput');
-      searchInput.value = tag;
+      document.getElementById('searchInput').value = tag;
       filterArticles();
     }
 
@@ -252,67 +195,44 @@
       return text.replace(reg, '<mark class="search-highlight">$1</mark>');
     }
 
-    function selectArticle(id, autoOpenGroup = true) {
-      currentArticleId = id;
-      const item = allData.find(a => String(a.id !== undefined ? a.id : a.title) === String(id));
-      if (!item) return;
-
-      if (autoOpenGroup && item.master) {
-        openGroups.add(item.master);
-      }
-
-      renderNav(getFilteredData());
-
-      let rawContent = item.content || '';
-      let contentHtml = '';
-      
-      if (typeof marked !== 'undefined' && typeof marked.parse === 'function') {
-        try { contentHtml = marked.parse(rawContent); } catch(e) { contentHtml = rawContent; }
-      } else {
-        contentHtml = rawContent;
-      }
-
-      if (currentSearchQuery) {
-        contentHtml = highlightText(contentHtml, currentSearchQuery);
-      }
-
-      const tags = Array.isArray(item.tags) ? item.tags : [];
-      const tagsHtml = tags.map(t => `<span class="sub-tag" onclick="filterByTag('${t.replace(/'/g, "\\'")}')">#${t}</span>`).join('');
-      let mediaHtml = '';
-
-      if (item.youtube) {
-        const ytId = extractYoutubeId(item.youtube);
-        if (ytId) {
-          mediaHtml += `<div class="media-area"><div class="media-label">影音補充 / MEDIA</div><div class="video-wrap"><iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe></div></div>`;
-        }
-      }
-
-      const images = Array.isArray(item.images) ? item.images : [];
-      if (images.length > 0) {
-        mediaHtml += `<div class="media-area"><div class="media-label">參考圖檔 / ATTACHMENTS</div><div class="img-grid">${images.map(img => `<a href="${img}" target="_blank"><img src="${img}" alt="參考圖"></a>`).join('')}</div></div>`;
-      }
-
-      const titleHtml = highlightText(item.title || '無標題', currentSearchQuery);
-
-      document.getElementById('contentArea').innerHTML = `
-        <div class="article-meta">
-          <span class="master-tag">${item.master || '勞動筆記'}</span>
-          <span class="updated-date">LABOR NOTES</span>
-        </div>
-        <h1 class="article-title">${titleHtml}</h1>
-        ${tagsHtml ? `<div class="tag-group">${tagsHtml}</div>` : ''}
-        <div class="divider"></div>
-        <div class="markdown-body">${contentHtml}</div>
-        ${mediaHtml}
-      `;
-      document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+    function stripMarkdown(md) {
+      if (!md) return '';
+      return md.replace(/\#+\s/g, '').replace(/\>\s/g, '').replace(/\-\s/g, '');
     }
 
-    function extractYoutubeId(url) {
-      if (!url) return null;
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : null;
+    function renderArticles() {
+      const contentArea = document.getElementById('contentArea');
+      let data = getSearchData();
+
+      if (currentCategory !== 'ALL') {
+        data = data.filter(item => (item.master || '一般條目') === currentCategory);
+      }
+
+      if (data.length === 0) {
+        contentArea.innerHTML = `<div style="text-align: center; color: #9a9590; padding: 80px 0; font-size: 14px;">查無相符筆記</div>`;
+        return;
+      }
+
+      let html = '';
+      data.forEach(item => {
+        const titleHtml = highlightText(item.title || '無標題', currentSearchQuery);
+        const plainExcerpt = stripMarkdown(item.content || '');
+        const excerptHtml = highlightText(plainExcerpt, currentSearchQuery);
+
+        const tags = Array.isArray(item.tags) ? item.tags : [];
+        const tagsHtml = tags.map(t => `<span class="sub-tag" onclick="filterByTag('${t.replace(/'/g, "\\'")}')"># ${highlightText(t, currentSearchQuery)}</span>`).join('');
+
+        html += `<div class="article-card">
+          <div class="card-header">
+            <div class="master-badge"><span>👤</span> ${item.master || '勞動筆記'}</div>
+          </div>
+          <div class="card-title">${titleHtml}</div>
+          <div class="card-excerpt">${excerptHtml}</div>
+          ${tagsHtml ? `<div class="tag-group">${tagsHtml}</div>` : ''}
+        </div>`;
+      });
+
+      contentArea.innerHTML = html;
     }
 
     loadData();
