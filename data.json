@@ -6,18 +6,18 @@
     "youtube": "",
     "images": [],
     "tags": [
-      "HR筆記"
+      "工作說明書"
     ],
     "content": "工作說明書就像是一份職位的「身份證」與「使用手冊」。"
   },
   {
     "id": "1785545143466",
     "master": "名詞",
-    "title": "員工賦能(Empowering employees",
+    "title": "員工賦能(Empowering employees)",
     "youtube": "",
     "images": [],
     "tags": [
-      "HR筆記"
+      "賦能"
     ],
     "content": "「員工賦能（Empowering employees，或稱員工授權、賦權）」在人力資源管理與組織行為學中，是指透過組織制度、流程設計或主管的領導風格，「垂直增加」員工的責任、控制權與自主權（自主決定權）"
   },
@@ -38,7 +38,9 @@
     "title": "勞務承攬",
     "youtube": "",
     "images": [],
-    "tags": [],
+    "tags": [
+      "承攬"
+    ],
     "content": "受派遣單位僱用，並向要派單位提供勞務者"
   },
   {
